@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 
-class FirestoreService {
+class FirestoreUserService {
   final _db = FirebaseFirestore.instance;
 
   Future<UserModel?> getUserByEmail(String email) async {

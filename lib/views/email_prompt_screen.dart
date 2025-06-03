@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controllers/user_controller.dart';
+import '../routes/router.dart';
 
 class EmailPromptScreen extends StatefulWidget {
   const EmailPromptScreen({super.key});
@@ -17,17 +18,34 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _loading = true);
 
-    final email = _controller.text.trim();
+    setState(() {
+      _loading = true;
+      _error = null; // Clear any old error
+    });
+
+    final email = _controller.text.trim().toLowerCase();
     final user = await _userController.fetchUserByEmail(email);
 
     setState(() => _loading = false);
 
     if (user == null) {
-      setState(() => _error = "User not found");
+      setState(() {
+        _error = "Enter a valid registered email";
+        _formKey.currentState!.validate(); // Force validator to show error
+      });
     } else {
+      setState(() => _error = null); // ✅ Clear error before navigation
 
+      if (!user.signedUp) {
+        Navigator.pushNamed(
+          context,
+          AppRoutes.session1,
+          arguments: user,
+        );
+      } else {
+        // TODO: navigate to schedule screen
+      }
     }
   }
 
@@ -47,22 +65,27 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
               TextFormField(
                 controller: _controller,
                 decoration: const InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                    final emailRegex = RegExp(r'^[\w-\.]+@uhn\.ca$');
-                    if (value == null || !emailRegex.hasMatch(value)) {
-                      return 'Enter a valid registered email';
-                    }
-                    return null;
+                validator: (value) {
+                  final email = value?.toLowerCase().trim();
+                  final emailRegex = RegExp(r'^[\w-\.]+@uhn\.ca$');
+                  if (email == null || !emailRegex.hasMatch(email)) {
+                    return 'Enter a valid registered email';
                   }
+                  if (_error != null) {
+                    final temp = _error;
+                    _error = null; // ✅ clear error after showing it once
+                    return temp;
+                  }
+                  return null;
+                },
               ),
-              const SizedBox(height: 16),
-              if (_error != null)
-                Text(_error!, style: const TextStyle(color: Colors.red)),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               _loading
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
-                  onPressed: _submit, child: const Text("Continue")),
+                onPressed: _submit,
+                child: const Text("Continue"),
+              ),
             ],
           ),
         ),
