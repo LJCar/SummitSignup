@@ -35,7 +35,7 @@ class _Session1ScreenState extends State<Session1Screen> {
 
     final availability = <String, bool>{};
     for (final p in session1) {
-      availability[p.id] = await _signupController.isPresentationAvailable(p.id);
+      availability[p.id] = await _signupController.isPresentationAvailable("${p.id}_s1");
     }
 
     setState(() {

@@ -21,7 +21,7 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
 
     setState(() {
       _loading = true;
-      _error = null; // Clear any old error
+      _error = null;
     });
 
     final email = _controller.text.trim().toLowerCase();
@@ -32,10 +32,10 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
     if (user == null) {
       setState(() {
         _error = "Enter a valid registered email";
-        _formKey.currentState!.validate(); // Force validator to show error
+        _formKey.currentState!.validate();
       });
     } else {
-      setState(() => _error = null); // ✅ Clear error before navigation
+      setState(() => _error = null);
 
       if (!user.signedUp) {
         Navigator.pushNamed(
@@ -44,7 +44,12 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
           arguments: user,
         );
       } else {
-        // TODO: navigate to schedule screen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.schedule,
+              (route) => false,
+          arguments: user,
+        );
       }
     }
   }
@@ -52,7 +57,7 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("UHN Summit")),
+      appBar: AppBar(title: const Text("UHN Summit 2025")),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -73,7 +78,7 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
                   }
                   if (_error != null) {
                     final temp = _error;
-                    _error = null; // ✅ clear error after showing it once
+                    _error = null;
                     return temp;
                   }
                   return null;

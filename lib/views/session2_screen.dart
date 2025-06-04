@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../models/presentation_model.dart';
 import '../controllers/presentation_controller.dart';
 import '../controllers/signup_controller.dart';
+import '../routes/router.dart';
 
 class Session2Screen extends StatefulWidget {
   final UserModel user;
@@ -41,7 +42,7 @@ class _Session2ScreenState extends State<Session2Screen> {
 
     final availability = <String, bool>{};
     for (final p in session2) {
-      availability[p.id] = await _signupController.isPresentationAvailable(p.id);
+      availability[p.id] = await _signupController.isPresentationAvailable("${p.id}_s2");
     }
 
     setState(() {
@@ -51,17 +52,35 @@ class _Session2ScreenState extends State<Session2Screen> {
     });
   }
 
-  void _submit() {
-    if (_selectedPresentationId != null) {
-      print('Session 1 ID: ${widget.session1Id}');
-      print('Session 2 ID: $_selectedPresentationId');
+  void _submit() async {
+    if (_selectedPresentationId == null) return;
 
-      // TODO: navigate to confirmation or write to Firestore
-      // Navigator.pushNamed(context, AppRoutes.confirmation, arguments: {
-      //   'user': widget.user,
-      //   'session1Id': widget.session1Id,
-      //   'session2Id': _selectedPresentationId!,
-      // });
+    final email = widget.user.email;
+    final session1Id = "${widget.session1Id}_s1";
+    final session2Id = "${_selectedPresentationId!}_s2";
+
+    setState(() => _loading = true);
+
+    try {
+      await _signupController.registerForSessions(
+        email: email,
+        session1Id: session1Id,
+        session2Id: session2Id,
+      );
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.schedule,
+            (route) => false,
+        arguments: widget.user,
+      );
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Signup failed. Please try again.")),
+      );
+    } finally {
+      setState(() => _loading = false);
     }
   }
 
