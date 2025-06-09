@@ -57,19 +57,38 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("UHN Summit 2025")),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color(0xFFF5F9FF),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        centerTitle: true,
+        title: const Text(
+          "UHN Surgical Summit 2025",
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Enter your registered email:"),
-              const SizedBox(height: 16),
-              TextFormField(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Enter your registered email:",
+              style: TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+            const SizedBox(height: 16),
+            Form(
+              key: _formKey,
+              child: TextFormField(
                 controller: _controller,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF007AFF), width: 2),
+                  ),
+                ),
                 validator: (value) {
                   final email = value?.toLowerCase().trim();
                   final emailRegex = RegExp(r'^[\w-\.]+@uhn\.ca$');
@@ -84,15 +103,30 @@ class _EmailPromptScreenState extends State<EmailPromptScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 24),
-              _loading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
+            ),
+            const SizedBox(height: 24),
+            _loading
+                ? const CircularProgressIndicator()
+                : SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
                 onPressed: _submit,
-                child: const Text("Continue"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF007AFF),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  "Continue",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 60),
+            const Spacer(),
+          ],
         ),
       ),
     );

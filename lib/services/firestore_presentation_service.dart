@@ -12,7 +12,6 @@ class FirestorePresentationService {
         return PresentationModel.fromMap(doc.data(), doc.id);
       }).toList();
     } catch (e) {
-      print("Error fetching presentations: $e");
       return [];
     }
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/presentation_model.dart';
 import '../controllers/signup_controller.dart';
-import '../routes/router.dart'; // <-- Make sure AppRoutes is imported
+import '../routes/router.dart';
 
 class ScheduleScreen extends StatefulWidget {
   final UserModel user;
@@ -98,7 +98,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Welcome ${widget.user.name}, this is your UHN Summit schedule:",
+              "Welcome ${widget.user.name}, this is your UHN Surgical Summit schedule:",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 24),
